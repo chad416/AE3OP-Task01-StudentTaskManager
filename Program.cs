@@ -1,4 +1,6 @@
-// Step 05 - Methods and refactoring
+// Step 06 - Enums, constants and final integration
+
+const int MaxTasks = 10;
 
 List<string> tasks = new List<string>();
 
@@ -6,11 +8,13 @@ tasks.Add("Review C# variables");
 tasks.Add("Practice loops");
 tasks.Add("Create a Console application");
 
+// Enum example
+TaskPriority priority = TaskPriority.High;
+Console.WriteLine(priority);
+ShowPriorityAdvice(priority);
+
 ShowTitle();
 ShowMessage("Application started.");
-
-int count = GetTaskCount(tasks);
-Console.WriteLine($"You currently have {count} tasks.");
 
 bool running = true;
 
@@ -31,6 +35,10 @@ while (running)
 
         case 3:
             RemoveTask(tasks);
+            break;
+
+        case 4:
+            ShowTaskCount(tasks);
             break;
 
         case 0:
@@ -67,13 +75,22 @@ void ShowMenu()
     Console.WriteLine("1. Add task");
     Console.WriteLine("2. View tasks");
     Console.WriteLine("3. Remove task");
+    Console.WriteLine("4. Show task count");
     Console.WriteLine("0. Exit");
 }
 
 int ReadOption()
 {
     Console.Write("Choose: ");
-    if (int.TryParse(Console.ReadLine(), out int option))
+    string? input = Console.ReadLine();
+
+    // End of input (e.g. Ctrl+Z) closes the application.
+    if (input == null)
+    {
+        return 0;
+    }
+
+    if (int.TryParse(input, out int option))
     {
         return option;
     }
@@ -97,6 +114,12 @@ void ShowTasks(List<string> tasks)
 
 void AddTask(List<string> tasks)
 {
+    if (tasks.Count >= MaxTasks)
+    {
+        Console.WriteLine("Maximum number of tasks reached.");
+        return;
+    }
+
     Console.Write("Enter task: ");
     string task = (Console.ReadLine() ?? "").Trim();
 
@@ -106,8 +129,47 @@ void AddTask(List<string> tasks)
         return;
     }
 
-    tasks.Add(task);
+    TaskPriority taskPriority = ReadPriority();
+
+    tasks.Add($"{task} [{taskPriority}]");
     ShowMessage("Task added.");
+    ShowPriorityAdvice(taskPriority);
+}
+
+TaskPriority ReadPriority()
+{
+    Console.Write("Priority (1 = Low, 2 = Medium, 3 = High): ");
+    string input = Console.ReadLine() ?? "";
+
+    switch (input.Trim())
+    {
+        case "1":
+            return TaskPriority.Low;
+
+        case "3":
+            return TaskPriority.High;
+
+        default:
+            return TaskPriority.Medium;
+    }
+}
+
+void ShowPriorityAdvice(TaskPriority priority)
+{
+    switch (priority)
+    {
+        case TaskPriority.Low:
+            Console.WriteLine("This task can wait.");
+            break;
+
+        case TaskPriority.Medium:
+            Console.WriteLine("Try to finish this task today.");
+            break;
+
+        case TaskPriority.High:
+            Console.WriteLine("Prioritize this task.");
+            break;
+    }
 }
 
 void RemoveTask(List<string> tasks)
@@ -133,9 +195,18 @@ void RemoveTask(List<string> tasks)
     }
 }
 
-// Investigate:
-// 1. Variable scope is the part of the code where a variable exists and can be used.
-//    A variable declared inside a method (or a { } block) only exists inside it.
-// 2. No. A variable declared inside one method cannot be accessed directly from another
-//    method - it has to be passed as a parameter or returned as a value.
-//    That is why AddTask, ShowTasks and RemoveTask receive the list as a parameter.
+void ShowTaskCount(List<string> tasks)
+{
+    int count = GetTaskCount(tasks);
+
+    Console.WriteLine($"You currently have {count} tasks.");
+    Console.WriteLine($"Maximum allowed: {MaxTasks}");
+    Console.WriteLine($"Remaining capacity: {MaxTasks - count}");
+}
+
+enum TaskPriority
+{
+    Low,
+    Medium,
+    High
+}
