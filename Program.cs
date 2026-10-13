@@ -69,3 +69,69 @@ Console.WriteLine($"Maximum tasks allowed per day: {MaxTasksPerDay}");
 // 2. int.TryParse() returns false instead of throwing, and sets the out value to 0.
 // 3. double is a binary floating-point type (fast, ~15-16 digits, small rounding errors);
 //    decimal is a base-10 type (28-29 digits, exact for money values) but slower.
+
+// Step 03 - Conditions: if, else and switch
+
+Console.WriteLine();
+Console.Write("How many tasks have you completed today? ");
+int.TryParse(Console.ReadLine(), out int completedTasks);
+
+if (completedTasks == 0)
+{
+    Console.WriteLine("Time to get started!");
+}
+else if (completedTasks < 3)
+{
+    Console.WriteLine("Good start. Keep going!");
+}
+else
+{
+    Console.WriteLine("Great progress!");
+}
+
+// Logical operators
+int tasks = 4;
+bool hasTime = true;
+
+if (tasks >= 3 && hasTime)
+{
+    Console.WriteLine("You can probably finish your daily goal.");
+}
+
+// Your turn: extended menu with switch
+Console.WriteLine();
+Console.WriteLine("1. Add task");
+Console.WriteLine("2. View tasks");
+Console.WriteLine("3. Complete task");
+Console.WriteLine("4. Remove task");
+Console.WriteLine("0. Exit");
+
+Console.Write("Choose an option: ");
+int.TryParse(Console.ReadLine(), out int option);
+
+switch (option)
+{
+    case 1:
+        Console.WriteLine("Adding a task...");
+        break;
+
+    case 2:
+        Console.WriteLine("Showing tasks...");
+        break;
+
+    case 3:
+        Console.WriteLine("Completing a task...");
+        break;
+
+    case 4:
+        Console.WriteLine("Removing a task...");
+        break;
+
+    case 0:
+        Console.WriteLine("Goodbye!");
+        break;
+
+    default:
+        Console.WriteLine("Invalid option.");
+        break;
+}
